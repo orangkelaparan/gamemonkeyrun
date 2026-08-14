@@ -70,11 +70,11 @@ void main() {
       ),
     );
 
-    await tester.tap(find.text('PLAY'));
+    await tester.tap(find.byKey(const ValueKey('jungleButton:PLAY')));
     await tester.pump();
-    await tester.tap(find.text('HOW TO PLAY'));
+    await tester.tap(find.byKey(const ValueKey('jungleButton:HOW TO PLAY')));
     await tester.pump();
-    await tester.tap(find.text('SETTINGS'));
+    await tester.tap(find.byKey(const ValueKey('jungleButton:SETTINGS')));
     await tester.pump();
 
     expect(playCount, 1);
@@ -89,7 +89,7 @@ void main() {
       MaterialApp(home: TutorialDialog(onGotIt: () => completed = true)),
     );
 
-    await tester.tap(find.text('GOT IT!'));
+    await tester.tap(find.byKey(const ValueKey('jungleButton:GOT IT!')));
     await tester.pump();
     expect(completed, isTrue);
   });
@@ -108,7 +108,7 @@ void main() {
       ),
     );
 
-    await tester.tap(find.byTooltip('Pause game'));
+    await tester.tap(find.byKey(const ValueKey('pauseButton')));
     await tester.pump();
     expect(paused, isTrue);
   });
@@ -140,9 +140,9 @@ void main() {
       ),
     );
 
-    await tester.tap(find.text('RUN AGAIN'));
+    await tester.tap(find.byKey(const ValueKey('jungleButton:RUN AGAIN')));
     await tester.pump();
-    await tester.tap(find.text('HOME'));
+    await tester.tap(find.byKey(const ValueKey('jungleButton:HOME')));
     await tester.pump();
 
     expect(restarted, isTrue);
