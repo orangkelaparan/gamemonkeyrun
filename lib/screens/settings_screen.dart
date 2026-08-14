@@ -78,41 +78,56 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ],
                 ),
                 const Spacer(),
-                Container(
-                  padding: const EdgeInsets.all(18),
-                  decoration: JungleTheme.glassPanel(),
-                  child: Column(
-                    children: [
-                      _SettingSwitch(
-                        label: 'MUSIC',
-                        value: _music,
-                        onChanged: _toggleMusic,
-                        icon: Icons.music_note_rounded,
-                      ),
-                      const Divider(color: Colors.white24),
-                      _SettingSwitch(
-                        label: 'SOUND',
-                        value: _sound,
-                        onChanged: _toggleSound,
-                        icon: Icons.volume_up_rounded,
-                      ),
-                      const Divider(color: Colors.white24),
-                      ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        leading: const Icon(
-                          Icons.school_rounded,
-                          color: JungleTheme.banana,
-                        ),
-                        title: const Text(
-                          'TUTORIAL',
-                          style: TextStyle(fontWeight: FontWeight.w900),
-                        ),
-                        trailing: TextButton(
-                          onPressed: _showTutorialAgain,
-                          child: const Text('SHOW AGAIN'),
-                        ),
+                DecoratedBox(
+                  decoration: const BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0x55000000),
+                        blurRadius: 20,
+                        offset: Offset(0, 10),
                       ),
                     ],
+                  ),
+                  child: Material(
+                    color: JungleTheme.darkUi.withValues(alpha: 0.78),
+                    borderRadius: BorderRadius.circular(22),
+                    clipBehavior: Clip.antiAlias,
+                    child: Padding(
+                      padding: const EdgeInsets.all(18),
+                      child: Column(
+                        children: [
+                          _SettingSwitch(
+                            label: 'MUSIC',
+                            value: _music,
+                            onChanged: _toggleMusic,
+                            icon: Icons.music_note_rounded,
+                          ),
+                          const Divider(color: Colors.white24),
+                          _SettingSwitch(
+                            label: 'SOUND',
+                            value: _sound,
+                            onChanged: _toggleSound,
+                            icon: Icons.volume_up_rounded,
+                          ),
+                          const Divider(color: Colors.white24),
+                          ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            leading: const Icon(
+                              Icons.school_rounded,
+                              color: JungleTheme.banana,
+                            ),
+                            title: const Text(
+                              'TUTORIAL',
+                              style: TextStyle(fontWeight: FontWeight.w900),
+                            ),
+                            trailing: TextButton(
+                              onPressed: _showTutorialAgain,
+                              child: const Text('SHOW AGAIN'),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
                 if (_message.isNotEmpty) ...[

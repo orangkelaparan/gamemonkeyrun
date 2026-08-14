@@ -1,39 +1,60 @@
 import 'dart:async';
 
 import 'package:flame_audio/flame_audio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import '../game/systems/score_system.dart';
 
 class AudioService {
+  static const _musicAsset = 'music/jungle_adventure_loop.mp3';
+
   bool musicEnabled = true;
   bool soundEnabled = true;
   bool _musicStarted = false;
+  bool _initialized = false;
+
+  bool get isMusicPlaying => _musicStarted && FlameAudio.bgm.isPlaying;
+
+  Future<void> initialize() async {
+    if (_initialized) return;
+    try {
+      await FlameAudio.bgm.initialize();
+      _initialized = true;
+    } catch (error) {
+      _log('Audio initialization failed: $error');
+    }
+  }
 
   Future<void> configure({required bool music, required bool sound}) async {
+    final wasMusicEnabled = musicEnabled;
     musicEnabled = music;
     soundEnabled = sound;
-    if (!music) await stopMusic();
+
+    if (!music) {
+      await stopMusic();
+    } else if (!wasMusicEnabled) {
+      await startMusic();
+    }
   }
 
   Future<void> startMusic() async {
-    if (!musicEnabled || _musicStarted) return;
+    if (!musicEnabled || (_musicStarted && FlameAudio.bgm.isPlaying)) return;
+    await initialize();
     try {
-      await FlameAudio.bgm.play(
-        'music/jungle_adventure_loop.wav',
-        volume: 0.34,
-      );
+      await FlameAudio.bgm.play(_musicAsset, volume: 0.42);
       _musicStarted = true;
-    } catch (_) {
+    } catch (error) {
       _musicStarted = false;
+      _log('Background music could not start: $error');
     }
   }
 
   Future<void> stopMusic() async {
     try {
       await FlameAudio.bgm.stop();
-    } catch (_) {
-      // Audio must never interrupt the game if the device audio backend is unavailable.
+    } catch (error) {
+      _log('Background music could not stop: $error');
     } finally {
       _musicStarted = false;
     }
@@ -43,8 +64,8 @@ class AudioService {
     if (!_musicStarted) return;
     try {
       await FlameAudio.bgm.pause();
-    } catch (_) {
-      // Safe no-op on unsupported audio platforms.
+    } catch (error) {
+      _log('Background music could not pause: $error');
     }
   }
 
@@ -52,8 +73,8 @@ class AudioService {
     if (!musicEnabled || !_musicStarted) return;
     try {
       await FlameAudio.bgm.resume();
-    } catch (_) {
-      // Safe no-op on unsupported audio platforms.
+    } catch (error) {
+      _log('Background music could not resume: $error');
     }
   }
 
@@ -79,5 +100,9 @@ class AudioService {
   void _alert() {
     if (!soundEnabled) return;
     unawaited(SystemSound.play(SystemSoundType.alert).catchError((_) {}));
+  }
+
+  void _log(String message) {
+    if (kDebugMode) debugPrint('Jungle Monkey Run audio: $message');
   }
 }

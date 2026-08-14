@@ -37,14 +37,26 @@ class ScoreHud extends StatelessWidget {
             Semantics(
               button: true,
               label: 'Pause game',
-              child: InkWell(
-                borderRadius: BorderRadius.circular(18),
-                onTap: onPause,
-                child: Container(
-                  width: 48,
-                  height: 48,
-                  decoration: JungleTheme.glassPanel(),
-                  child: const Icon(Icons.pause_rounded, color: Colors.white),
+              child: Material(
+                color: Colors.transparent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                child: IconButton(
+                  onPressed: onPause,
+                  tooltip: 'Pause game',
+                  style: IconButton.styleFrom(
+                    minimumSize: const Size(48, 48),
+                    backgroundColor: JungleTheme.darkUi.withValues(alpha: 0.78),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                      side: BorderSide(
+                        color: Colors.white.withValues(alpha: 0.16),
+                      ),
+                    ),
+                  ),
+                  icon: const Icon(Icons.pause_rounded),
                 ),
               ),
             ),

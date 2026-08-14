@@ -18,66 +18,49 @@ class JungleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = primary
-        ? const [JungleTheme.banana, Color(0xFFFFA826)]
-        : const [JungleTheme.forest, JungleTheme.deepJungle];
+    final backgroundColor = primary ? JungleTheme.banana : JungleTheme.forest;
+    final foregroundColor = primary ? JungleTheme.darkUi : Colors.white;
+    final style = FilledButton.styleFrom(
+      minimumSize: const Size.fromHeight(58),
+      backgroundColor: backgroundColor,
+      foregroundColor: foregroundColor,
+      disabledBackgroundColor: JungleTheme.darkUi.withValues(alpha: 0.55),
+      disabledForegroundColor: Colors.white54,
+      elevation: 5,
+      shadowColor: Colors.black54,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(18),
+        side: BorderSide(
+          color: Colors.white.withValues(alpha: primary ? 0.35 : 0.18),
+        ),
+      ),
+      textStyle: const TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.w900,
+        letterSpacing: 0.8,
+      ),
+    );
+
+    final callback = onPressed == null ? null : () => onPressed!.call();
     return Semantics(
       button: true,
+      enabled: onPressed != null,
       label: label,
       child: SizedBox(
         width: double.infinity,
         height: 58,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: colors,
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(
-              color: Colors.white.withValues(alpha: primary ? 0.35 : 0.18),
-            ),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x66000000),
-                blurRadius: 10,
-                offset: Offset(0, 5),
+        child: icon == null
+            ? FilledButton(
+                onPressed: callback,
+                style: style,
+                child: Text(label),
+              )
+            : FilledButton.icon(
+                onPressed: callback,
+                style: style,
+                icon: Icon(icon, size: 22),
+                label: Text(label),
               ),
-            ],
-          ),
-          child: Material(
-            type: MaterialType.transparency,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(18),
-              onTap: onPressed,
-              child: Center(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (icon != null) ...[
-                      Icon(
-                        icon,
-                        color: primary ? JungleTheme.darkUi : Colors.white,
-                        size: 22,
-                      ),
-                      const SizedBox(width: 10),
-                    ],
-                    Text(
-                      label,
-                      style: TextStyle(
-                        color: primary ? JungleTheme.darkUi : Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 0.8,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
       ),
     );
   }

@@ -71,15 +71,19 @@ class _JungleMonkeyRunAppState extends State<JungleMonkeyRunApp> {
         context: context,
         barrierDismissible: false,
         builder: (context) => TutorialDialog(
-          onGotIt: () async {
-            await _storage.setTutorialCompleted(true);
-            if (context.mounted) Navigator.of(context).pop();
+          onGotIt: () {
+            _completeTutorial(context);
           },
         ),
       );
     }
     if (!mounted) return;
     setState(() => _game = JungleMonkeyGame(storage: _storage, audio: _audio));
+  }
+
+  Future<void> _completeTutorial(BuildContext dialogContext) async {
+    await _storage.setTutorialCompleted(true);
+    if (dialogContext.mounted) Navigator.of(dialogContext).pop();
   }
 
   Future<void> _showHowToPlay() async {
@@ -122,9 +126,15 @@ class _JungleMonkeyRunAppState extends State<JungleMonkeyRunApp> {
           ? GameScreen(game: _game!, onHome: _returnHome)
           : HomeScreen(
               preferences: _preferences!,
-              onPlay: _openGame,
-              onHowToPlay: _showHowToPlay,
-              onSettings: _openSettings,
+              onPlay: () {
+                _openGame();
+              },
+              onHowToPlay: () {
+                _showHowToPlay();
+              },
+              onSettings: () {
+                _openSettings();
+              },
             ),
     );
   }

@@ -15,23 +15,26 @@ class GamePreferences {
 }
 
 class ScoreStorage {
-  ScoreStorage({SharedPreferencesAsync? preferences})
-    : _preferences = preferences ?? SharedPreferencesAsync();
+  ScoreStorage() : _preferences = SharedPreferencesAsync();
+
+  ScoreStorage.testing() : _preferences = null;
+
+  SharedPreferencesAsync get _store => _preferences ?? SharedPreferencesAsync();
 
   static const _bestScoreKey = 'best_score';
   static const _tutorialCompletedKey = 'tutorial_completed';
   static const _musicEnabledKey = 'music_enabled';
   static const _soundEnabledKey = 'sound_enabled';
 
-  final SharedPreferencesAsync _preferences;
+  final SharedPreferencesAsync? _preferences;
 
   Future<GamePreferences> loadPreferences() async {
     try {
       final values = await Future.wait<Object?>([
-        _preferences.getInt(_bestScoreKey),
-        _preferences.getBool(_tutorialCompletedKey),
-        _preferences.getBool(_musicEnabledKey),
-        _preferences.getBool(_soundEnabledKey),
+        _store.getInt(_bestScoreKey),
+        _store.getBool(_tutorialCompletedKey),
+        _store.getBool(_musicEnabledKey),
+        _store.getBool(_soundEnabledKey),
       ]);
       return GamePreferences(
         bestScore: values[0] as int? ?? 0,
@@ -51,21 +54,20 @@ class ScoreStorage {
 
   Future<int> loadBestScore() async {
     try {
-      return await _preferences.getInt(_bestScoreKey) ?? 0;
+      return await _store.getInt(_bestScoreKey) ?? 0;
     } catch (_) {
       return 0;
     }
   }
 
-  Future<void> saveBestScore(int score) =>
-      _preferences.setInt(_bestScoreKey, score);
+  Future<void> saveBestScore(int score) => _store.setInt(_bestScoreKey, score);
 
   Future<void> setTutorialCompleted(bool value) =>
-      _preferences.setBool(_tutorialCompletedKey, value);
+      _store.setBool(_tutorialCompletedKey, value);
 
   Future<void> setMusicEnabled(bool value) =>
-      _preferences.setBool(_musicEnabledKey, value);
+      _store.setBool(_musicEnabledKey, value);
 
   Future<void> setSoundEnabled(bool value) =>
-      _preferences.setBool(_soundEnabledKey, value);
+      _store.setBool(_soundEnabledKey, value);
 }

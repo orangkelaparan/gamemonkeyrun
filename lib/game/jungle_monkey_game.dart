@@ -62,6 +62,7 @@ class JungleMonkeyGame extends FlameGame with TapCallbacks {
   String _feedback = '';
   bool _newBest = false;
   bool _demoPauseTriggered = false;
+  bool _pausedFromCountdown = false;
   double _shakeX = 0;
   double _shakeY = 0;
 
@@ -121,6 +122,7 @@ class JungleMonkeyGame extends FlameGame with TapCallbacks {
 
   @override
   void onTapDown(TapDownEvent event) {
+    unawaited(audio.startMusic());
     jump();
   }
 
@@ -130,6 +132,7 @@ class JungleMonkeyGame extends FlameGame with TapCallbacks {
     _status = GameStatus.ready;
     _countdown = 3.2;
     _feedback = '';
+    unawaited(audio.startMusic());
     _publish();
   }
 
@@ -143,16 +146,18 @@ class JungleMonkeyGame extends FlameGame with TapCallbacks {
   }
 
   void pause() {
-    if (_status != GameStatus.running) return;
+    if (_status != GameStatus.ready && _status != GameStatus.running) return;
+    _pausedFromCountdown = _status == GameStatus.ready;
     _status = GameStatus.paused;
-    audio.pauseMusic();
+    unawaited(audio.pauseMusic());
     _publish();
   }
 
   void resume() {
     if (_status != GameStatus.paused) return;
-    _status = GameStatus.running;
-    audio.resumeMusic();
+    _status = _pausedFromCountdown ? GameStatus.ready : GameStatus.running;
+    _pausedFromCountdown = false;
+    unawaited(audio.resumeMusic());
     _publish();
   }
 
@@ -173,6 +178,7 @@ class JungleMonkeyGame extends FlameGame with TapCallbacks {
     _feedback = '';
     _newBest = false;
     _demoPauseTriggered = false;
+    _pausedFromCountdown = false;
     _obstacles.clear();
     _collectibles.clear();
     _scoreSystem.reset();
@@ -234,7 +240,7 @@ class JungleMonkeyGame extends FlameGame with TapCallbacks {
     if (_countdown <= 0) {
       _status = GameStatus.running;
       _monkey.startRunning();
-      audio.startMusic();
+      unawaited(audio.startMusic());
       _publish();
     } else {
       _publish(countdownLabel: label);
