@@ -122,8 +122,10 @@ class JungleMonkeyGame extends FlameGame with TapCallbacks {
 
   @override
   void onTapDown(TapDownEvent event) {
-    unawaited(audio.startMusic());
-    jump();
+    if (_status == GameStatus.ready) {
+      _beginRunningImmediately();
+    }
+    if (_status == GameStatus.running) jump();
   }
 
   Future<void> startSequence() async {
@@ -138,11 +140,20 @@ class JungleMonkeyGame extends FlameGame with TapCallbacks {
 
   void jump() {
     if (_status == GameStatus.ready) {
-      return;
+      _beginRunningImmediately();
     }
     if (_status == GameStatus.running && _monkey.jump()) {
       audio.playJump();
     }
+  }
+
+  void _beginRunningImmediately() {
+    if (_status != GameStatus.ready) return;
+    _countdown = 0;
+    _status = GameStatus.running;
+    _monkey.startRunning();
+    unawaited(audio.startMusic());
+    _publish();
   }
 
   void pause() {
@@ -238,10 +249,7 @@ class JungleMonkeyGame extends FlameGame with TapCallbacks {
       handLickMode: false,
     );
     if (_countdown <= 0) {
-      _status = GameStatus.running;
-      _monkey.startRunning();
-      unawaited(audio.startMusic());
-      _publish();
+      _beginRunningImmediately();
     } else {
       _publish(countdownLabel: label);
     }

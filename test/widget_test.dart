@@ -27,6 +27,15 @@ void main() {
     expect(data[1] & 0xE0, 0xE0);
   });
 
+  test('Audio preference configuration does not autoplay at startup', () async {
+    final audio = AudioService();
+
+    await audio.configure(music: true, sound: true);
+
+    expect(audio.isInitialized, isFalse);
+    expect(audio.lastError, isNull);
+  });
+
   testWidgets('Jungle button exposes and triggers its action', (tester) async {
     var pressed = false;
 

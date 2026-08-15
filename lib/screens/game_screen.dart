@@ -71,33 +71,39 @@ class _GameOverlay extends StatelessWidget {
         if (active) ScoreHud(snapshot: snapshot, onPause: game.pause),
         if (snapshot.countdownLabel.isNotEmpty &&
             snapshot.status == GameStatus.ready)
-          Center(
-            child: Text(
-              snapshot.countdownLabel,
-              style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                fontSize: 86,
-                color: JungleTheme.banana,
-                shadows: const [
-                  Shadow(color: JungleTheme.soil, offset: Offset(0, 5)),
-                ],
+          IgnorePointer(
+            ignoring: true,
+            child: Center(
+              child: Text(
+                snapshot.countdownLabel,
+                style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                  fontSize: 86,
+                  color: JungleTheme.banana,
+                  shadows: const [
+                    Shadow(color: JungleTheme.soil, offset: Offset(0, 5)),
+                  ],
+                ),
               ),
             ),
           ),
         if (snapshot.feedbackLabel.isNotEmpty &&
             (snapshot.status == GameStatus.running ||
                 snapshot.status == GameStatus.collision))
-          Positioned(
-            top: 150,
-            left: 0,
-            right: 0,
-            child: Text(
-              snapshot.feedbackLabel,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: JungleTheme.banana,
-                shadows: const [
-                  Shadow(color: JungleTheme.soil, offset: Offset(0, 3)),
-                ],
+          IgnorePointer(
+            ignoring: true,
+            child: Positioned(
+              top: 150,
+              left: 0,
+              right: 0,
+              child: Text(
+                snapshot.feedbackLabel,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: JungleTheme.banana,
+                  shadows: const [
+                    Shadow(color: JungleTheme.soil, offset: Offset(0, 3)),
+                  ],
+                ),
               ),
             ),
           ),

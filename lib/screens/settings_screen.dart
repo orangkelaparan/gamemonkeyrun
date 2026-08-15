@@ -28,13 +28,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _toggleMusic(bool value) async {
     setState(() => _music = value);
     await widget.storage.setMusicEnabled(value);
-    await widget.audio.configure(music: value, sound: _sound);
+    await widget.audio.configureFromUser(music: value, sound: _sound);
   }
 
   Future<void> _toggleSound(bool value) async {
     setState(() => _sound = value);
     await widget.storage.setSoundEnabled(value);
-    await widget.audio.configure(music: _music, sound: value);
+    await widget.audio.configureFromUser(music: _music, sound: value);
   }
 
   Future<void> _showTutorialAgain() async {

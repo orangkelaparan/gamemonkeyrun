@@ -37,39 +37,22 @@ class ScoreHud extends StatelessWidget {
             Semantics(
               button: true,
               label: 'Pause game',
-              child: Material(
-                color: Colors.transparent,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18),
-                ),
-                child: SizedBox(
-                  width: 48,
-                  height: 48,
-                  child: Listener(
-                    key: const ValueKey('pauseButton'),
-                    behavior: HitTestBehavior.opaque,
-                    onPointerUp: (_) => onPause(),
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: JungleTheme.darkUi.withValues(alpha: 0.78),
-                        borderRadius: BorderRadius.circular(18),
-                        border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.16),
-                        ),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color(0x55000000),
-                            blurRadius: 10,
-                            offset: Offset(0, 5),
-                          ),
-                        ],
-                      ),
-                      child: const Center(
-                        child: Icon(Icons.pause_rounded, color: Colors.white),
-                      ),
+              child: IconButton(
+                key: const ValueKey('pauseButton'),
+                onPressed: onPause,
+                tooltip: 'Pause game',
+                style: IconButton.styleFrom(
+                  minimumSize: const Size(48, 48),
+                  backgroundColor: JungleTheme.darkUi.withValues(alpha: 0.78),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
+                    side: BorderSide(
+                      color: Colors.white.withValues(alpha: 0.16),
                     ),
                   ),
                 ),
+                icon: const Icon(Icons.pause_rounded),
               ),
             ),
           ],

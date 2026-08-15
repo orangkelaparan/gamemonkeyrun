@@ -66,6 +66,9 @@ class _JungleMonkeyRunAppState extends State<JungleMonkeyRunApp> {
   Future<void> _openGame() async {
     final preferences = await _storage.loadPreferences();
     if (!mounted) return;
+    // PLAY is the first explicit user action allowed to initialize game audio.
+    await _audio.initialize();
+    if (!mounted) return;
     if (!preferences.tutorialCompleted) {
       await showDialog<void>(
         context: context,
