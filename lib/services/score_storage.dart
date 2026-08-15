@@ -25,6 +25,7 @@ class ScoreStorage {
   static const _tutorialCompletedKey = 'tutorial_completed';
   static const _musicEnabledKey = 'music_enabled';
   static const _soundEnabledKey = 'sound_enabled';
+  static const _ioTimeout = Duration(seconds: 3);
 
   final SharedPreferencesAsync? _preferences;
 
@@ -35,7 +36,7 @@ class ScoreStorage {
         _store.getBool(_tutorialCompletedKey),
         _store.getBool(_musicEnabledKey),
         _store.getBool(_soundEnabledKey),
-      ]);
+      ]).timeout(_ioTimeout);
       return GamePreferences(
         bestScore: values[0] as int? ?? 0,
         tutorialCompleted: values[1] as bool? ?? false,
@@ -54,20 +55,30 @@ class ScoreStorage {
 
   Future<int> loadBestScore() async {
     try {
-      return await _store.getInt(_bestScoreKey) ?? 0;
+      return await _store.getInt(_bestScoreKey).timeout(_ioTimeout) ?? 0;
     } catch (_) {
       return 0;
     }
   }
 
-  Future<void> saveBestScore(int score) => _store.setInt(_bestScoreKey, score);
+  Future<void> saveBestScore(int score) =>
+      _safeWrite(() => _store.setInt(_bestScoreKey, score));
 
   Future<void> setTutorialCompleted(bool value) =>
-      _store.setBool(_tutorialCompletedKey, value);
+      _safeWrite(() => _store.setBool(_tutorialCompletedKey, value));
 
   Future<void> setMusicEnabled(bool value) =>
-      _store.setBool(_musicEnabledKey, value);
+      _safeWrite(() => _store.setBool(_musicEnabledKey, value));
 
   Future<void> setSoundEnabled(bool value) =>
-      _store.setBool(_soundEnabledKey, value);
+      _safeWrite(() => _store.setBool(_soundEnabledKey, value));
+
+  /// Persistence is best-effort and must never block UI transitions.
+  Future<void> _safeWrite(Future<dynamic> Function() op) async {
+    try {
+      await op().timeout(_ioTimeout);
+    } catch (_) {
+      // Ignore storage failures so dialogs and game-state transitions continue.
+    }
+  }
 }

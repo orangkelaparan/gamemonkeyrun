@@ -383,7 +383,11 @@ class JungleMonkeyGame extends FlameGame with TapCallbacks {
     _newBest = score > _bestScore;
     if (_newBest) {
       _bestScore = score;
-      await storage.saveBestScore(score);
+      try {
+        await storage.saveBestScore(score);
+      } catch (_) {
+        // The Game Over screen must still appear when persistence fails.
+      }
       audio.playNewBest();
     }
     _status = GameStatus.gameOver;

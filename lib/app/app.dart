@@ -85,8 +85,12 @@ class _JungleMonkeyRunAppState extends State<JungleMonkeyRunApp> {
   }
 
   Future<void> _completeTutorial(BuildContext dialogContext) async {
-    await _storage.setTutorialCompleted(true);
-    if (dialogContext.mounted) Navigator.of(dialogContext).pop();
+    try {
+      await _storage.setTutorialCompleted(true);
+    } finally {
+      // The non-dismissible tutorial must never trap the player if persistence fails.
+      if (dialogContext.mounted) Navigator.of(dialogContext).pop();
+    }
   }
 
   Future<void> _showHowToPlay() async {
